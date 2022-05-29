@@ -3,18 +3,20 @@ import 'package:flutter/services.dart';
 import 'package:pepo/widgets/canvas/circle.dart';
 import 'package:pepo/widgets/canvas/rectangle.dart';
 import 'package:soundpool/soundpool.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen(BuildContext ctx, {Key? key}) : super(key: key);
+  const SplashScreen({Key? key}) : super(key: key);
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  // late AudioPlayer player;
   late Soundpool sound_pool;
   late int soundId;
+
+  late FlutterSecureStorage secure_storage;
 
   Future<int> loadSound() async {
     int soundId = await rootBundle.load("assets/pepo.ogg").then((ByteData soundData) {
@@ -27,49 +29,46 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // player = AudioPlayer();
 
+    secure_storage = const FlutterSecureStorage();
     sound_pool = Soundpool.fromOptions(options: SoundpoolOptions.kDefault);
-    // Future.wait([loadSound()]);
   }
 
   @override
   void dispose() {
-    // player.dispose();
     sound_pool.dispose();
     super.dispose();
   }
 
   void playSound (soundId) {
-    // player.setAsset("assets/pepo.ogg");
-    // player.play();
     sound_pool.play(soundId);
+  }
+
+  Future<bool> isLoggedIn() async {
+    await secure_storage.write(key: "is_logged_in", value: "0"); //FIXME: remove after testing
+    return await secure_storage.read(key: "is_logged_in") == "1";
+  }
+
+  void doneWithSplash() async {
+    String moveTo = await isLoggedIn() ? '/home' : '/home_no_auth';
+    Navigator.popAndPushNamed(
+        context,
+        moveTo
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     Future.delayed(const Duration(milliseconds: 2000), () async {
       int soundId = await loadSound();
-      // Play the pepo welcome sound
-      // await playSound(soundId);
-      await sound_pool.play(soundId);
-      // sleep(const Duration(milliseconds: 1000));
-      await Future.delayed(Duration(seconds: 1));
 
-      print('done playing!!');
-      // sound_pool.play(soundId);
-      // Future.wait([
-      //   player.setAsset("assets/pepo.ogg"),
-      //   player.play()
-      // ]);
-      // Future.wait([
-      //   player.setAsset("assets/pepo.ogg"),
-      //   player.play()
-      // ]);
+      // Play the pepo welcome sound
+      await sound_pool.play(soundId);
+      await Future.delayed(const Duration(seconds: 1));
 
       // Pop the current route
       // And push a new route
-      Navigator.popAndPushNamed(context, '/home_no_auth');
+      doneWithSplash();
     });
 
     return SafeArea(

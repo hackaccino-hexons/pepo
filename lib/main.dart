@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pepo/screens/home.dart';
+import 'package:pepo/screens/home_no_auth.dart';
 import 'package:pepo/screens/splash.dart';
 import 'package:pepo/styles.dart';
 
@@ -15,8 +16,9 @@ class MyApp extends StatelessWidget {
     return CupertinoApp(
       theme: themeData,
       routes: {
-        '/': (ctx) => SplashScreen(ctx),
-        '/home_no_auth': (_) => const HomeScreenNotAuthenticated()
+        '/': (_) => const SplashScreen(),
+        '/home_no_auth': (_) => const HomeScreenNotAuthenticated(),
+        '/home': (_) => const HomeScreen()
       },
     );
   }

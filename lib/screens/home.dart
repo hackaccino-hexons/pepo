@@ -1,54 +1,76 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
 
-class HomeScreenNotAuthenticated extends StatefulWidget {
-  const HomeScreenNotAuthenticated({Key? key}) : super(key: key);
+import '../widgets/piggy_bank.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreenNotAuthenticated> createState() => _HomeScreenNotAuthenticatedState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenNotAuthenticatedState extends State<HomeScreenNotAuthenticated> {
+class _HomeScreenState extends State<HomeScreen> {
+  late List<PiggyBank> piggyBanks;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // piggyBanks = Iterable<PiggyBank>.generate(6, (i) => PiggyBank(
+    //   index: i,
+    //   iconData: CupertinoIcons.sparkles,
+    //   name: "something cool"
+    // )).toList();
+
+    piggyBanks = [
+      PiggyBank(
+        index: 1,
+        iconData: CupertinoIcons.airplane,
+        name: "Airplane"
+      ),
+      PiggyBank(
+          index: 2,
+          iconData: CupertinoIcons.car,
+          name: "Car"
+      ),
+      PiggyBank(
+          index: 3,
+          iconData: CupertinoIcons.flame,
+          name: "Emergency"
+      ),
+      PiggyBank(
+          index: 4,
+          iconData: CupertinoIcons.plus,
+          name: "Add new"
+      ),
+      PiggyBank(
+          index: 5,
+          iconData: CupertinoIcons.plus,
+          name: "eeee"
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFFFFE3A9), Color(0xFF73CAF2)],
-                // begin: AlignmentDirectional.topStart,
-                // end: AlignmentDirectional.bottomEnd,
-               transform: GradientRotation(0.4)
-              )
-          ),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/piggy_dotted.png",
-                  scale: 1.5,
-                ),
-                Padding(padding: EdgeInsetsDirectional.only(top: 100)),
-                Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      CupertinoButton.filled(
-                          child: Text("Sign Up"),
-                          onPressed: () => {print("Sign Up button clicked")}
-                      ),
-                      Text("OR"),
-                      CupertinoButton.filled(
-                          child: Text("Login"),
-                          onPressed: () => {print("Login button clicked")}
-                      )
-                    ],
-                  ),
-                ),
-                Padding(padding: EdgeInsetsDirectional.only(top: 40)),
-                Text("Claim your own piggy now!")
-              ]
-          ),
-        )
+     child: Container(
+       decoration: const BoxDecoration(
+         color: Color(0xFFAEE5DB)
+       ),
+       child: Column(
+         children: [
+           const Padding(padding: EdgeInsetsDirectional.only(top: 10)),
+           SingleChildScrollView(
+             scrollDirection: Axis.horizontal,
+             child: Row(
+               children: piggyBanks.isNotEmpty ? piggyBanks : [],
+             ),
+           )
+         ],
+       ),
+     )
     );
   }
 }
